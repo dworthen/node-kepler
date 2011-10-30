@@ -3,10 +3,14 @@
 /*************************************
 * Resolving dependencies
 **************************************/
-var program = require('commander'),
-		server  = require('connect'),
-		kepler  = require('../lib/kepler'),
-		des     = kepler.getDes();
+var program   = require('commander'),
+		server    = require('connect'),
+		kepler    = require('../lib/kepler'),
+		path 			= require('path'),
+		fs 				= require('fs'),
+		stylus    = require('stylus'),
+		useStylus = false,
+		des       = kepler.getDes();
 		kepler.checkForConfigFile();
 
 // Sets the location for the project
@@ -33,6 +37,7 @@ program
   .usage('[options] [commands]')	
   .option('-l --location <directory>', 'choose the source directory. [./]', setLocation, './')
   .option('-d --destination <directory>', 'Set the destination directory, relative to the source directory, for the compiled project [./_site/].', setDes, './_site/')
+  // .option('-s --stylus [directory]', 'Uses stylus', setStylus, './styles/')
   .option('--layout <directory>', 'Set the layouts directory relative to the source directory. [./_layouts/]')
   .option('--posts <directory>', 'Set the posts source directory relative to teh source directory. [./_posts/]')
   .option('--posts-destination <directory>', 'Set the destination directory of the posts relative to the destination directory [./_site/]');
