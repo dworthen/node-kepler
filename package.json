@@ -2,14 +2,14 @@
     "name" : "kepler",
     "version": "0.0.1",
     "dependencies": {
-        "yaml"      : "0.2.2",
         "connect"   : "1.7.1",
         "ejs"       : "0.4.3",
         "props"     : "0.1.0",
         "marked"    : "0.1.0",
-        "commander" : "0.2.0"
+        "commander" : "0.2.0",
+        "stylus"    : "0.19.0"
     },
     "author" : "Derek Worthen",
     "bin": { "kepler": "bin/kepler.js" },
-    "engines": { "node": "0.4.11"},
+    "engines": { "node": "0.4.11"}
 }

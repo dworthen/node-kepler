@@ -50,7 +50,7 @@ program
 		compile();
 		server.createServer()
 			.use(server.favicon())
-			.use(server.static(kepler.destination))
+			.use(server.static(des))
 			.listen(port);
 		console.log('server is listening on port ' + port);
 	});
