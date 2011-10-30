@@ -61,7 +61,7 @@ var compile = function () {
 
 
 program
-  .version('0.0.1')
+  .version('0.0.11')
   .usage('[options] [commands]')	
   .option('-l --location <directory>', 'choose the source directory. [./]', setLocation, './')
   .option('-d --destination <directory>', 'Set the destination directory, relative to the source directory, for the compiled project [./_site/].', setDes, './_site/')
