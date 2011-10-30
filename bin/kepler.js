@@ -24,11 +24,39 @@ var setDes = function (location) {
 	des = kepler.getDes();
 };
 
+var setStylus = function (dir) {
+	kepler.setStylus(dir);
+	useStylus = kepler.getStylus();
+};
+
 // Compiles the project
 var compile = function () {
-	// kepler.resolvePaths();
+	// console.log(useStylus);
+	if(useStylus) {
+		var stylusFiles = kepler.readProject(useStylus);
+	}
+
+	kepler.addIgnoredFiles([path.basename(useStylus)]);
 	kepler.readProject();
 	kepler.createDestination();
+
+	// Stylus support
+	if(stylusFiles) {
+		stylusFiles.forEach(function (file) {
+			var stats = fs.lstatSync(file);
+			if(!stats.isDirectory()) {
+				if(path.extname(file) === '.styl') {
+					var fileContents = fs.readFileSync(file, 'utf-8');
+					stylus(fileContents)
+						.set('filename', path.basename(file, '.styl') + '.css')
+						.render(function(err, css) {
+							if (err) console.error(err);
+							fs.writeFileSync(path.join(des, path.basename(useStylus), path.basename(file, '.styl') + '.css'), css);
+						});
+				}
+			}
+		});	
+	}
 };
 
 
@@ -37,7 +65,7 @@ program
   .usage('[options] [commands]')	
   .option('-l --location <directory>', 'choose the source directory. [./]', setLocation, './')
   .option('-d --destination <directory>', 'Set the destination directory, relative to the source directory, for the compiled project [./_site/].', setDes, './_site/')
-  // .option('-s --stylus [directory]', 'Uses stylus', setStylus, './styles/')
+  .option('-s --stylus <directory>', 'Uses stylus', setStylus, './styles/')
   .option('--layout <directory>', 'Set the layouts directory relative to the source directory. [./_layouts/]')
   .option('--posts <directory>', 'Set the posts source directory relative to teh source directory. [./_posts/]')
   .option('--posts-destination <directory>', 'Set the destination directory of the posts relative to the destination directory [./_site/]');
