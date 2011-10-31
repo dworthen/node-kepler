@@ -9,6 +9,7 @@ var program   = require('commander'),
 		path 			= require('path'),
 		fs 				= require('fs'),
 		stylus    = require('stylus'),
+		nib				= require('nib'),
 		useStylus = false,
 		des       = kepler.getDes();
 		kepler.checkForConfigFile();
@@ -34,9 +35,9 @@ var compile = function () {
 	// console.log(useStylus);
 	if(useStylus) {
 		var stylusFiles = kepler.readProject(useStylus);
+		kepler.addIgnoredFiles(['*.styl']);
 	}
 
-	kepler.addIgnoredFiles([path.basename(useStylus)]);
 	kepler.readProject();
 	kepler.createDestination();
 
@@ -49,6 +50,7 @@ var compile = function () {
 					var fileContents = fs.readFileSync(file, 'utf-8');
 					stylus(fileContents)
 						.set('filename', path.basename(file, '.styl') + '.css')
+						.use(nib())
 						.render(function(err, css) {
 							if (err) console.error(err);
 							fs.writeFileSync(path.join(des, path.basename(useStylus), path.basename(file, '.styl') + '.css'), css);
@@ -63,16 +65,16 @@ var compile = function () {
 program
   .version('0.0.11')
   .usage('[options] [commands]')	
-  .option('-l --location <directory>', 'choose the source directory. [./]', setLocation, './')
-  .option('-d --destination <directory>', 'Set the destination directory, relative to the source directory, for the compiled project [./_site/].', setDes, './_site/')
-  .option('-s --stylus <directory>', 'Uses stylus', setStylus, './styles/')
-  .option('--layout <directory>', 'Set the layouts directory relative to the source directory. [./_layouts/]')
-  .option('--posts <directory>', 'Set the posts source directory relative to teh source directory. [./_posts/]')
-  .option('--posts-destination <directory>', 'Set the destination directory of the posts relative to the destination directory [./_site/]');
+  .option('-p --project <directory>', 'choose the project directory. [./]', setLocation, './')
+  .option('-d --destination <directory>', 'Sets the compiled directory, relative to the project directory [./_site/].', setDes, './_site/')
+  .option('-s --stylus <directory>', 'Sets the directory containing stylus files. [./styles/]', setStylus, './styles/')
+  .option('--layouts <directory>', 'Sets the layouts directory containing .ejs templates. [./_layouts/]')
+  .option('--posts <directory>', 'Sets the posts directory containing posts pre-compiled. [./_posts/]')
+  .option('--posts-destination <directory>', 'Sets the destination directory of the posts relative to the destination directory [./_site/]');
 
 program
 	.command('compile')
-	.description('compile the source directory to the destination directory')
+	.description('compile the source directory to the destination directory, this command is equivalent to running kepler without any options')
 	.action(compile);
 
 program
