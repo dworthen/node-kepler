@@ -1,1 +1,218 @@
-test
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Kepler Home Page</title>
+	<link rel="stylesheet" href="./styles/style.css" type="text/css" />
+	<link rel="stylesheet" href="./styles/highlighter/prettify.css" type="text/css" />
+	<script type="text/javascript" src="./styles/highlighter/prettify.js"></script>
+</head>
+<body>
+	<div id="container">
+		<header><h1>Kepler <span class="red">JS</span></h1>
+		<small>version 0.0.11</small>
+		</header>
+		<div id="nav">
+			<ul>
+				<li><a href="#">Home</a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">Portfolio</a></li>
+				<li><a href="#">Contact Me</a></li>
+			</ul>
+		<br class="clear" />
+		</div>
+		<div id="main">
+			<h2>Overview</h2> <p>Kepler is a static website generator inspired by the rubygem <a href="http://jekyllrb.com/">jekyll</a>, and named after this <a href="http://en.wikipedia.org/wiki/Johannes_Kepler">guy</a>.</p>  <h2>Installing Kepler</h2> <p>In order to install Kepler make sure you have node (version 0.4.0 and above) and npm (version 1.0.27 and above).</p>  <h3>Checking the prereqs:</h3> <p>To view the current version of node installed on your system run the following code in your terminal, note $, indicate shell prompt.</p>  <pre class="prettyprint lang-sh">
+$ node -v
+// prints v0.4.<em> where </em> is your specific version,
+// make sure * &gt;= 0. my current version is v0.4.11
+</pre>
+
+ <p>To install the most recent version of Nodejs follow the instructions detailed <a href="https://github.com/joyent/node/wiki/Installation">here</a>.</p>  <p>To view the current version of npm:</p>  <pre class="prettyprint lang-sh">
+$ npm -v
+// prints v1.0.<em>, make sure </em> &gt;= 27. My current version is v1.0.103
+</pre>
+
+ <p>Follow these <a href="https://github.com/isaacs/npm">instructions</a> to install npm.</p>  <h3>Installing Kepler</h3> <p>Run:</p>  <pre class="prettyprint lang-sh">
+$ npm install kepler
+</pre>
+
+ <h2>Kepler help</h2> <p>To recieve help in the terminal run:</p>  <pre class="prettyprint lang-sh">
+$ kepler -h
+// alternatively, kepler --help, also prints out help documentation
+</pre>
+
+ <h2>Working with Kepler</h2> <p>Here is the standard, minimalist project directory setup:</p>  <pre class="prettyprint">
+projectFolder
+    |- _layouts/
+        |- default.ejs
+    |- index.md (or index.html)
+</pre>
+
+ <h2>Creating and running your first site with Kepler</h2> <p>Create a new project and cd into it:</p>  <pre class="prettyprint lang-sh">
+$ mkdir newProjectName
+$ cd newProjectName
+</pre>
+
+ <p>Now create the standard directory structure we listed above:</p>  <pre class="prettyprint lang-sh">
+$ mkdir _layouts
+$ touch _layouts/default.ejs
+$ touch index.html
+</pre>
+
+ <p>Kepler also supports <a href="http://daringfireball.net/projects/markdown/">markdown</a>, so alternatively one may create a index.md file (kepler only supports the .md extension thus far and not the .markdown extension) instead of an index.html.</p>  <p>Now place the following code in default.ejs using whatever text editor you prefer. For now, do not worry if the following code does not make sense.</p>  <pre class="prettyprint lang-html">
+// default.ejs
+<xmp>
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+<body>
+    <%- content %>
+</body>
+</html>
+</xmp>
+</pre>
+
+ <p>Place code below in index.html</p>  <pre class="prettyprint">
+// index.html
+title: &apos;My Website&apos;
+layout: &apos;default&apos;
+
+
+Hello World
+</pre>
+
+ <h3>Using the kepler command in the terminal</h3> <p>Before I explain the code lets create our site by running kepler for the first time in the terminal. In the terminal run:</p>  <pre class="prettyprint lang-sh">
+// within the newProjectName directory
+$ kepler
+</pre>
+
+ <p>Now run:</p>  <pre class="prettyprint lang-sh">
+$ ls
+</pre>
+
+ <p>and notice that kepler has created a new directory, _site/. Within this directory contains the newly compiled site. If you view the source for _site/index.html you will see the following code:</p>  <pre class="prettyprint lang-html">
+<xmp>
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>My Website</title>
+</head>
+<body>
+    Hello World
+</body>
+</html>
+</xmp>
+</pre>
+
+ <p>Notice the relationship between default.ejs and index.html. Kepler has taken the information provided by index.html and placed it into the corresponding placeholder in default.ejs.</p>  <h2>Behind the Scenes</h2> <p>When the kepler command is executed in the terminal it creates a new directory, ./_site/ (the compiled destination, Kepler may be configured to create a compiled destination by another name) within the current directory, aka project, and &quot;compiles&quot; the project to this new directory. First kepler mirrors the project directory structure to the compiled destination, with a few exceptions: Kepler will not copy over any folders or files starting with a period (.) or an underscore (_). </p>  <p>As Kepler is mirrors the project to the compiled destination, it searches through each file for any yaml or json code located at the beginning of the file. In the index.html code above, the yaml aspect is the first two lines, where it states the layout and title.</p>  <p>Equivalent to the yaml code, using json in our index.html would look like this:</p>  <pre class="prettyprint lang-js">
+// index.html using json
+{
+    &quot;title&quot; : &quot;My Website&quot;,
+    &quot;layout&quot; : &quot;default&quot;
+}<br>
+
+Hello World
+</pre>
+
+ <p>In either case, when kepler comes across a file with yaml or json, behind the scences kepler creates the following json object:</p>  <pre class="prettyprint lang-js">
+{
+    title: &quot;My Website&quot;,
+    layout: &quot;default&quot;,
+    content: &quot;Hello World&quot;
+}
+</pre>
+
+ <p><strong>Notice:</strong> the three line breaks after the last bit of json/yaml in both instances of our index.html. Without three line breaks the file will not compile correctly. For instance the code below is incorrect and will not compile correctly:</p>  <pre class="prettyprint lang-html">
+// Incorrect file code, will not compile correctly<br>// Needs three line breaks exactly
+title: &apos;My Website&apos;
+layout: &apos;default&apos;<br>
+Hello World
+</pre>
+
+ <p>The only time the json object created by kepler is used is when a layout atribute is defined within either the yaml or json for a file. When a layout is defined, kepler searches for a file by that name with a .ejs extension within the default layouts directory, rootOfProject/_layouts/, and passes the json object to it. </p>  <p>Within the layout file, default.ejs in the above examples, the various keys of the json object become variables and may be referenced directly (Notice in the above default.ejs code we reference title and content directly).</p>  <h2>Defaults</h2> <p>By default, Kepler uses <a href="https://github.com/visionmedia/ejs">ejs templating</a> and has support for <a href="http://daringfireball.net/projects/markdown/">markdown</a> parsing using the node module <a href="https://github.com/chjj/marked">marked</a>.</p>  <p>Example of an index.md file (kepler currently only supports the .md extension for markdown.)</p>  <pre class="prettyprint">
+// index.md
+title: &apos;My Website&apos;
+layout: &apos;default&apos;<br>
+
+## Hello World
+- list item one
+- list item two
+</pre>
+
+ <p>and using the same default.ejs examined earlier, the compiled index.html output:</p>  <pre class="prettyprint lang-html">
+<xmp>
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>My Website</title>
+</head>
+<body>
+    <h2>Hello World</h2>
+    <ul>
+        <li>list item one</li>
+        <li>list item two</li>
+    </ul>
+</body>
+</html>
+</xmp>
+</pre>
+
+ <p>Kepler also supports the use of <a href="http://learnboost.github.com/stylus/">stylus</a> (with <a href="http://visionmedia.github.com/nib/">nib</a>). Stylus support is enabled through the terminal by using the -s (or --stylus) flag and passing in the directory containing all/any stylus files (.styl). </p>  <pre class="prettyprint lang-sh">
+$ stylus -s ./stylesheets/ 
+</pre>
+
+ <p>Now the project will need a stylesheets directory containing .styl files like so:</p>  <pre class="prettyprint">
+projectFolder
+|- _layouts/
+    |- default.ejs
+|- stylesheets/
+    |- styles.styl
+    |- font.styl
+|- index.md<br></pre>
+
+ <p>and styles/font.styl contain <a href="http://learnboost.github.com/stylus/">stylus</a> code.</p>  <h2>kepler options and commands</h2> <p>We just examined the -s options, to view a full list of options with brief details of each option run:</p>  <pre class="prettyprint lang-sh">
+$ kepler -h
+</pre>
+
+ <h3>Options</h3> <strong>-p: Setting the Project Directory</strong>
+
+ <p>Lets say that the current directory in the terminal is not the root of the website. For example the current directory contains subfolders and files that are not part of the website and the website/documentation for it is contained within the docs subdirectory. </p>  <p>The projectFolder directory:</p>  <pre class="prettyprint">
+projectFolder
+|- someSubfoler/
+|- anotherSubfolder/
+|- docs/
+    |- _layouts/
+        |- default.ejs
+    |- styles/
+    |- index.md
+|- some-root-files
+</pre>
+
+ <p>Then to specify the directory to use as the project in the terminal:</p>  <pre class="prettyprint lang-sh">
+// projectFolder
+$ kepler -p ./docs/
+</pre>
+
+ <p>That means kepler will create the compiled site at docs/_site/ containing all files compiled from the docs/ directory and ignoring files outside of docs/. </p>  <h3>-d: Destination</h3> <p>Now what if I do not wish to compile my site to _site/, I may set this configurations using the -d flag:</p>  <pre class="prettyprint lang-sh">
+$ kepler -d ./_compiled/
+</pre>
+
+ <p>So instead of compiling the site to _site, Kepler compiles it to _compiled.</p>  <p>Of course multiple flags can be used simultaneously but remember to always specify the project directory first:</p>  <pre class="prettyprint lang-sh">
+$ kepler -p ./docs/ -d ./_compiled/
+</pre>
+
+ <p>This will compile the site to docs/_compiled/. </p>  <h3>-s: Stylus</h3> <p>To specify the folder containing stylus files, .styl, use the -s flag:</p>  <pre class="prettyprint lang-sh">
+kepler -s ./stylesheets/
+</pre>
+
+ <p>This will convert all .styl files to .css files, all other files within this directory will be compiled as usual. .styl files should contain <a href="http://learnboost.github.com/stylus/">stylus</a> code or css.</p>
+	</div>
+	<script type="text/javascript">prettyPrint();</script>
+</body>
+</html>
