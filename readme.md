@@ -8,7 +8,7 @@ Kepler is a static website generator inspired by the ruby gem, [jekyll](http://j
 $ npm install kepler -g
 ```
 
-visit the documentation for information on using kepler (coming soon). 
+visit the [documentation](dworthen.github.com/node-kepler) for information on using kepler (coming soon). 
 
 #### Dependencies
 

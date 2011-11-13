@@ -3,95 +3,74 @@
 /*************************************
 * Resolving dependencies
 **************************************/
-var program   = require('commander'),
-		server    = require('connect'),
-		kepler    = require('../lib/kepler'),
-		path 			= require('path'),
-		fs 				= require('fs'),
-		stylus    = require('stylus'),
-		nib				= require('nib'),
-		useStylus = false,
-		des       = kepler.getDes();
-		kepler.checkForConfigFile();
+var program    = require('commander'),
+		server     = require('connect'),
+		kepler     = require('../lib/kepler'),
+		path       = require('path'),
+		fs         = require('fs'),
+		stylus     = require('stylus'),
+		nib        = require('nib'),
+		configFile = kepler.getConfigFile(),
+		config     = kepler.configure(configFile),
+		results;
 
-// Sets the location for the project
-var setLocation = function (location) {
-	kepler.setDir(location);
+/************************************************
+* Functions
+*************************************************/
+
+var setProject = function (dir) {
+	config = kepler.setProjectDirectory(dir);
 };
 
-// Sets the destination for where to compile the project too.
-var setDes = function (location) {
-	kepler.setDestination(location);
-	des = kepler.getDes();
+var setDesDir = function (dir) {
+	config['destinationDirectory'] = kepler.setDestinationDirectory(dir);
 };
 
 var setStylus = function (dir) {
-	kepler.setStylus(dir);
-	useStylus = kepler.getStylus();
+	config['stylus'] = kepler.setStylus(dir);
 };
 
-// Compiles the project
-var compile = function () {
-	// console.log(useStylus);
-	if(useStylus) {
-		var stylusFiles = kepler.readProject(useStylus);
-		kepler.addIgnoredFiles(['*.styl']);
-	}
-
-	kepler.readProject();
-	kepler.createDestination();
-
-	// Stylus support
-	if(stylusFiles) {
-		stylusFiles.forEach(function (file) {
-			var stats = fs.lstatSync(file);
-			if(!stats.isDirectory()) {
-				if(path.extname(file) === '.styl') {
-					var fileContents = fs.readFileSync(file, 'utf-8');
-					stylus(fileContents)
-						.set('filename', path.basename(file, '.styl') + '.css')
-						.use(nib())
-						.render(function(err, css) {
-							if (err) console.error(err);
-							fs.writeFileSync(path.join(des, path.basename(useStylus), path.basename(file, '.styl') + '.css'), css);
-						});
-				}
-			}
-		});	
-	}
+var setConfig = function (file) {
+	configFile = kepler.setConfigFile(file);
+	config = kepler.configure(configFile);
 };
 
+var compile = function (conf) {
+	results = kepler.kepler(conf);
+	return results;
+};
 
 program
-  .version('0.0.11')
+  .version('0.1.0')
   .usage('[options] [commands]')	
-  .option('-p --project <directory>', 'choose the project directory. [./]', setLocation, './')
-  .option('-d --destination <directory>', 'Sets the compiled directory, relative to the project directory [./_site/].', setDes, './_site/')
+  .option('-p --project <directory>', 'choose the project directory. [./]', setProject, './')
+  .option('-d --destination <directory>', 'Sets the compiled directory, relative to the project directory [./_site/].', setDesDir, './_site/')
   .option('-s --stylus <directory>', 'Sets the directory containing stylus files. [./styles/]', setStylus, './styles/')
-  .option('--layouts <directory>', 'Sets the layouts directory containing .ejs templates. [./_layouts/]')
-  .option('--posts <directory>', 'Sets the posts directory containing posts pre-compiled. [./_posts/]')
-  .option('--posts-destination <directory>', 'Sets the destination directory of the posts relative to the destination directory [./_site/]');
+  .option('-S --silent', 'Use Kepler in silent mode')
+  .option('-c --config <file>', 'Sets the configuration file. [./_config.yml]', setConfig, './_config.yml')
 
 program
 	.command('compile')
-	.description('compile the source directory to the destination directory, this command is equivalent to running kepler without any options')
-	.action(compile);
+	.description('compile the source directory to the destination directory.')
+	.action(function() {
+		compile(config);
+	});
 
 program
 	.command('server [port]')
 	.description('Start a server listening on the supplied port [3000]')
 	.action(function(port) {
 		port = port || 3000;
-		compile();
+		compile(config);
 		server.createServer()
 			.use(server.favicon())
-			.use(server.static(des))
+			.use(server.static(config['destinationDirectory']))
 			.listen(port);
 		console.log('server is listening on port ' + port);
 	});
 
 program.parse(process.argv);
 
-compile();
-
-
+if(!program.silent) {
+	console.log(results);
+}
