@@ -37,7 +37,6 @@ var setConfig = function (file) {
 
 var compile = function (conf) {
 	results = kepler.kepler(conf);
-	return results;
 };
 
 program
