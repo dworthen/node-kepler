@@ -19,7 +19,23 @@
 			"file": "/home/derek/sites/kepler-docs/index.md",
 			"settings":
 			{
-				"buffer_size": 9113,
+				"buffer_size": 8944,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/derek/sites/kepler-docs/_fileFunctions.js",
+			"settings":
+			{
+				"buffer_size": 1455,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/derek/sites/kepler-docs/_config.yml",
+			"settings":
+			{
+				"buffer_size": 45,
 				"line_ending": "Unix"
 			}
 		},
@@ -28,6 +44,14 @@
 			"settings":
 			{
 				"buffer_size": 802,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/derek/sites/kepler-docs/package.json",
+			"settings":
+			{
+				"buffer_size": 362,
 				"line_ending": "Unix"
 			}
 		}
@@ -211,6 +235,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"fs",
 			"conf",
 			"modules",
 			"configuration",
@@ -268,7 +293,7 @@
 			"sync"
 		],
 		"highlight": true,
-		"in_selection": true,
+		"in_selection": false,
 		"preserve_case": false,
 		"regex": false,
 		"replace_history":
@@ -291,15 +316,15 @@
 					"file": "/home/derek/sites/kepler-docs/index.md",
 					"settings":
 					{
-						"buffer_size": 9113,
+						"buffer_size": 8944,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3108,
-								3108
+								423,
+								423
 							]
 						],
 						"settings":
@@ -309,13 +334,66 @@
 							"wrap_width": 100
 						},
 						"translation.x": 0.0,
-						"translation.y": 1712.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 1,
+					"file": "/home/derek/sites/kepler-docs/_fileFunctions.js",
+					"settings":
+					{
+						"buffer_size": 1455,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								270,
+								270
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/home/derek/sites/kepler-docs/_config.yml",
+					"settings":
+					{
+						"buffer_size": 45,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7,
+								7
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/YAML/YAML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "/home/derek/sites/kepler-docs/_layouts/default.ejs",
 					"settings":
 					{
@@ -334,6 +412,34 @@
 						{
 							"syntax": "Packages/HTML/HTML.tmLanguage",
 							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/home/derek/sites/kepler-docs/package.json",
+					"settings":
+					{
+						"buffer_size": 362,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								330,
+								330
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"tab_size": 2.0,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

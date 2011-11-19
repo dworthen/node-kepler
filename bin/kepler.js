@@ -12,7 +12,7 @@ var program    = require('commander'),
 		nib        = require('nib'),
 		configFile = kepler.getConfigFile(),
 		config     = kepler.configure(configFile),
-		results;
+		silent;
 
 /************************************************
 * Functions
@@ -36,7 +36,11 @@ var setConfig = function (file) {
 };
 
 var compile = function (conf) {
-	results = kepler.kepler(conf);
+	return kepler.kepler(conf);
+};
+
+var setSilent = function () {
+	return true;
 };
 
 program
@@ -45,14 +49,17 @@ program
   .option('-p --project <directory>', 'choose the project directory. [./]', setProject, './')
   .option('-d --destination <directory>', 'Sets the compiled directory, relative to the project directory [./_site/].', setDesDir, './_site/')
   .option('-s --stylus <directory>', 'Sets the directory containing stylus files. [./styles/]', setStylus, './styles/')
-  .option('-S --silent', 'Use Kepler in silent mode')
+  .option('-S --silent', 'Use Kepler in silent mode', setSilent)
   .option('-c --config <file>', 'Sets the configuration file. [./_config.yml]', setConfig, './_config.yml')
 
 program
 	.command('compile')
 	.description('compile the source directory to the destination directory.')
 	.action(function() {
-		compile(config);
+		var results = compile(config);
+		if(!program.silent) {
+			console.log(results);
+		}
 	});
 
 program
@@ -60,7 +67,10 @@ program
 	.description('Start a server listening on the supplied port [3000]')
 	.action(function(port) {
 		port = port || 3000;
-		compile(config);
+		var results = compile(config);
+		if(!program.silent) {
+			console.log(results);
+		}
 		server.createServer()
 			.use(server.favicon())
 			.use(server.static(config['destinationDirectory']))
@@ -69,7 +79,3 @@ program
 	});
 
 program.parse(process.argv);
-
-if(!program.silent) {
-	console.log(results);
-}
