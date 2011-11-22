@@ -27,7 +27,7 @@
 			"file": "/home/derek/sites/kepler-docs/_fileFunctions.js",
 			"settings":
 			{
-				"buffer_size": 1455,
+				"buffer_size": 1580,
 				"line_ending": "Unix"
 			}
 		},
@@ -35,7 +35,7 @@
 			"file": "/home/derek/sites/kepler-docs/_config.yml",
 			"settings":
 			{
-				"buffer_size": 45,
+				"buffer_size": 81,
 				"line_ending": "Unix"
 			}
 		},
@@ -308,7 +308,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -344,15 +344,15 @@
 					"file": "/home/derek/sites/kepler-docs/_fileFunctions.js",
 					"settings":
 					{
-						"buffer_size": 1455,
+						"buffer_size": 1580,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								270,
-								270
+								493,
+								493
 							]
 						],
 						"settings":
@@ -361,7 +361,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 48.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -371,15 +371,15 @@
 					"file": "/home/derek/sites/kepler-docs/_config.yml",
 					"settings":
 					{
-						"buffer_size": 45,
+						"buffer_size": 81,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7,
-								7
+								81,
+								81
 							]
 						],
 						"settings":

@@ -3,15 +3,15 @@
 /*************************************
 * Resolving dependencies
 **************************************/
-var program    = require('commander'),
-		server     = require('connect'),
-		kepler     = require('../lib/kepler'),
-		path       = require('path'),
-		fs         = require('fs'),
-		stylus     = require('stylus'),
-		nib        = require('nib'),
-		configFile = kepler.getConfigFile(),
-		config     = kepler.configure(configFile),
+var program = require('commander'),
+		server  = require('connect'),
+		kepler  = require('../lib/kepler'),
+		path    = require('path'),
+		fs      = require('fs'),
+		stylus  = require('stylus'),
+		nib     = require('nib'),
+		config  = path.resolve('_config.yml'),
+		// config     = kepler.configure(configFile),
 		silent;
 
 /************************************************
@@ -31,8 +31,8 @@ var setStylus = function (dir) {
 };
 
 var setConfig = function (file) {
-	configFile = kepler.setConfigFile(file);
-	config = kepler.configure(configFile);
+	config = path.resolve(file);
+	return config;
 };
 
 var compile = function (conf) {
@@ -56,7 +56,8 @@ program
 	.command('compile')
 	.description('compile the source directory to the destination directory.')
 	.action(function() {
-		var results = compile(config);
+		var conf = kepler.configure(config);
+		var results = compile(conf);
 		if(!program.silent) {
 			console.log(results);
 		}
@@ -67,13 +68,14 @@ program
 	.description('Start a server listening on the supplied port [3000]')
 	.action(function(port) {
 		port = port || 3000;
-		var results = compile(config);
+		var conf = kepler.configure(config)
+		var results = compile(conf);
 		if(!program.silent) {
 			console.log(results);
 		}
 		server.createServer()
 			.use(server.favicon())
-			.use(server.static(config['destinationDirectory']))
+			.use(server.static(conf['destinationDirectory']))
 			.listen(port);
 		console.log('server is listening on port ' + port);
 	});
