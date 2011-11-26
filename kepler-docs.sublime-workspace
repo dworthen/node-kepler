@@ -27,7 +27,7 @@
 			"file": "/home/derek/sites/kepler-docs/_fileFunctions.js",
 			"settings":
 			{
-				"buffer_size": 1580,
+				"buffer_size": 1677,
 				"line_ending": "Unix"
 			}
 		},
@@ -35,7 +35,15 @@
 			"file": "/home/derek/sites/kepler-docs/_config.yml",
 			"settings":
 			{
-				"buffer_size": 81,
+				"buffer_size": 103,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/derek/sites/kepler-docs/test.coffee",
+			"settings":
+			{
+				"buffer_size": 413,
 				"line_ending": "Unix"
 			}
 		},
@@ -308,7 +316,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -344,15 +352,15 @@
 					"file": "/home/derek/sites/kepler-docs/_fileFunctions.js",
 					"settings":
 					{
-						"buffer_size": 1580,
+						"buffer_size": 1677,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								493,
-								493
+								537,
+								537
 							]
 						],
 						"settings":
@@ -361,7 +369,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 48.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -371,15 +379,15 @@
 					"file": "/home/derek/sites/kepler-docs/_config.yml",
 					"settings":
 					{
-						"buffer_size": 81,
+						"buffer_size": 103,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								81,
-								81
+								5,
+								5
 							]
 						],
 						"settings":
@@ -394,6 +402,32 @@
 				},
 				{
 					"buffer": 3,
+					"file": "/home/derek/sites/kepler-docs/test.coffee",
+					"settings":
+					{
+						"buffer_size": 413,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
 					"file": "/home/derek/sites/kepler-docs/_layouts/default.ejs",
 					"settings":
 					{
@@ -420,7 +454,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "/home/derek/sites/kepler-docs/package.json",
 					"settings":
 					{
