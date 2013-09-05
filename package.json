@@ -1,8 +1,9 @@
 {
-    "name" : "kepler",
-    "version": "0.1.0",
-    "description": "Static website generator",
-    "dependencies": {
-    },
-    "author" : "Derek Worthen",
+  "name": "kepler",
+  "version": "0.2.0",
+  "description": "Static website generator",
+  "author": "Derek Worthen",
+  "dependencies": {
+    "markdown": "~0.5.0"
+  }
 }
