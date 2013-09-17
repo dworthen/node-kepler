@@ -11,5 +11,9 @@
     "connect": "~2.9.0",
     "consolidate": "~0.9.1",
     "ejs": "~0.8.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "dworthen/node-kepler"
+  },
 }
