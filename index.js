@@ -1,1 +1,4 @@
-module.exports = require('./lib/kepler.js');
+module.exports = {
+  parse: require('./lib/kepler.js'),
+  render: require('./lib/render.js')
+};

@@ -2,9 +2,7 @@
 
 #### Kepler is still very much in alpha phase and is not ready for production.
 
-Version 0.2.x is a complete overhaul from previous versions. Previous versions were poor attempts to be a Jekyll clone. Without a clear vision or problem to solve Kepler v0.1.x was convoluted solution for producing static websites. 
-
-Version 0.2.x points Kepler into a new direction. Kepler is no longer a tool for building static websites but is now aiming to be a simple blog generator. Kepler is a connect middleware that will serve up markdown (.md) files.
+Kepler is a collection of connect middleware designed to serve up a directory of markdown files (.md) as a blog. 
 
 ## Install
 
@@ -12,9 +10,9 @@ Version 0.2.x points Kepler into a new direction. Kepler is no longer a tool for
 npm install kepler
 ```
 
-## Usage
+## Usage v0.2.2
 
-Kepler will parse the requested file using [js-yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter) and add the object to req. the __content property on req.kepler will be parsed using [markdown-js](https://github.com/evilstreak/markdown-js).
+The main middleware piece to kepler is the parser. Keplers parser will parse the requested file using [js-yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter) and add the object to req. the __content property on req.kepler will be parsed using [markdown-js](https://github.com/evilstreak/markdown-js).
 
 ```javascript
 var http = require('http')
@@ -22,8 +20,9 @@ var http = require('http')
   , connect = require('connect')
   , app = connect();
 
-app.use(kepler('articles'));
+app.use(kepler.parse('articles'));
 app.use(function(req, res, next) {
+  // req.kepler.__content will have the heart of the .md file
   if(req.kepler) return res.end(kepler.__content));
   return next();
 });
@@ -31,29 +30,46 @@ app.use(function(req, res, next) {
 http.createServer(app).listen(3000);
 ```
 
+If the markdown file being rendered contains
+
+```yaml
+---
+title: "Website"
+list:
+  - one
+  - two
+----
+# Body!
+```
+
+then `req.kepler` will be
+
+```javascript
+{
+  title: "website",
+  list: ["one", "two"]
+  __content: "<h1>Body!</h1>'
+}
+```
+
 ### Using a template
 
-This example uses [consolidate](https://github.com/visionmedia/consolidate.js) and the [ejs](https://github.com/visionmedia/ejs/wiki) template engine to render markdown files within a layout.
+This example uses the kepler render middleware which utilizes [consolidate.js](https://github.com/visionmedia/consolidate.js) for rendering predefined layout files.
 
 ```javascript
 var http = require('http')
   , kepler = require('kepler')
-  , cons = require('consolidate')
   , connect = require('connect')
   , app = connect();
 
 app.use(kepler('articles'));
-// TODO: package this as a seperate middleware piece.
-app.use(function(req, res, next){
-  if(req.kepler) {
-    cons.ejs('test/layout.ejs', req.kepler, function(err, html) {
-      if (err) throw err; 
-      res.end(html);
-    });
-  } else {
-    return next();
-  }
+app.use(kepler.parse({
+  engine: 'ejs',
+  layout: 'layout.ejs'
 });
+
+http.createServer(app).listen(3000);
+console.log('listening on port 3000');
 ```
 
 layout.ejs
@@ -69,7 +85,7 @@ layout.ejs
 </ul>
 ```
 
-test.md file within articles/ to render
+articles/test.md
 
 ```yaml
 ---
@@ -101,6 +117,10 @@ Will produce:
 ## Changelog
 
 Version 0.2.1 no longer renders markdown files directly but instead parses the file using js-yaml-front and markdown-js and passes the resulting object through the req body. This allows for people to write connect middleware to pre/post modify the parsed file.  
+
+Version 0.2.x is a complete overhaul from previous versions. Previous versions were poor attempts to be a Jekyll clone. Without a clear vision or problem to solve Kepler v0.1.x was convoluted solution for producing static websites. 
+
+Version 0.2.x points Kepler into a new direction. Kepler is no longer a tool for building static websites but is now aiming to be a simple blog generator. Kepler is a connect middleware that will serve up markdown (.md) files.
 
 ## TODO
 
