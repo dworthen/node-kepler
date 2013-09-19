@@ -20,12 +20,10 @@ app.use(kepler.dirParse({
 
 app.use(function(req, res, next) {
   if (req.kepler) {
-    //cons.ejs("test/blogLayout.ejs", {files: req.kepler}, function(err, html) {
-    //  if (err) return next(err);
-    //  return res.end(html);
-    //});
-
-    res.end(JSON.stringify(req.kepler));
+    cons.ejs("test/blogLayout.ejs", {files: req.kepler}, function(err, html) {
+      if (err) return next(err);
+      return res.end(html);
+    });
   }
 });
 
