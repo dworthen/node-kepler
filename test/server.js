@@ -2,8 +2,9 @@ var http = require('http')
   , kepler = require('../index')
   , connect = require('connect')
   , express = require('express')
-  , cons = require('consolidate')
-  , app = express();
+  , cons = require('consolidate');
+  
+app = express();
 
 app.use(express.static('test/'));
 
@@ -15,7 +16,8 @@ app.use(kepler.render({
 }));
 
 app.use(kepler.dirParse({
-  location: 'test/fixtures'
+  location: 'test/fixtures',
+  limit: 1
 }));
 
 app.use(function(req, res, next) {
