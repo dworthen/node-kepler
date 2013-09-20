@@ -10,9 +10,19 @@ Kepler is a collection of connect middleware designed to serve up a directory of
 npm install kepler
 ```
 
-## Usage - v0.2.3
+## API - v0.2.3
 
-The main middleware piece to kepler is the parser. Keplers parser will parse the requested file using [js-yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter) and add the object to req. the __content property on req.kepler will be parsed using [markdown-js](https://github.com/evilstreak/markdown-js).
+Kepler is a collection of connect middleware.
+
+### kepler.parse(location|String)
+
+#### Parameters 
+
+- `location`: where the markdown files are hosted.
+
+The contents of markdown files will be parsed with [js-yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter) and the resulting object will be added to the `req` body under the kepler property. `req.kepler.__content` will be parsed with [markdown-js](https://github.com/evilstreak/markdown-js). 
+
+#### Example
 
 ```javascript
 var http = require('http')
@@ -29,6 +39,8 @@ app.use(function(req, res, next) {
 
 http.createServer(app).listen(3000);
 ```
+
+The url `localhost:3000/2013/blog` will have kepler look for `blog.md` in `/articles/2013/`. 
 
 If the markdown file being rendered contains
 
@@ -52,9 +64,17 @@ then `req.kepler` will be
 }
 ```
 
-### Using a template
+### kepler.render(options|Object)
 
-This example uses the kepler render middleware which utilizes [consolidate.js](https://github.com/visionmedia/consolidate.js) for rendering predefined layout files.
+#### Parameters
+
+- `options`: 
+  - `layout`: `String` a layout template file.
+  - `engine`: `String` templating engine to be used (uses [consolidate.js](https://github.com/visionmedia/consolidate.js)). 
+
+kepler.render will take the kepler object added to `req` by kepler.parse and render it with the defined template engine using consolidate.
+
+#### Example
 
 ```javascript
 var http = require('http')
@@ -114,9 +134,16 @@ Will produce:
 </ul>
 ```
 
-### Displaying a list of blog entries
+### kepler.dirParse(options|Object)
 
-This example uses a piece of middleware for displaying a directory of markdown files as list of blog entries. The example uses [express](http://expressjs.com/).
+#### Parameters
+
+- `options`:
+  - `location`: `String` base directory to render md files from. Often times this will be the same location passed to `kepler.parse`.
+
+The dirParse middleware attaches a list of files in a directory to the `req` body under the kepler property. The files are ordered based on when the files were last modified, the most recently edited file being first.
+
+#### Example
 
 ```javascript
 var http = require('http')
@@ -172,7 +199,6 @@ title: "Blog Title"
 ### content
 ```
 
-The dirParse middleware attaches a list of files in a directory to the req body under the kepler property. The files are ordered based on when the were last edited, the most recently edited file being first.
 
 Each object in the list has access to the file [stats](http://nodejs.org/api/fs.html#fs_class_fs_stats). Here is an example of the type of object returned by dirParse.
 
