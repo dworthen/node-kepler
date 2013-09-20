@@ -199,7 +199,6 @@ title: "Blog Title"
 ### content
 ```
 
-
 Each object in the list has access to the file [stats](http://nodejs.org/api/fs.html#fs_class_fs_stats). Here is an example of the type of object returned by dirParse.
 
 ```javascript
@@ -237,6 +236,8 @@ cd node-kepler
 npm install --dev
 node test/server.js
 ```
+
+View `http://localhost:3000/2013` to view a list of blog entries, click on a title to see a specific blog entry.
 
 ## Changelog
 
