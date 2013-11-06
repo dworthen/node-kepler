@@ -1,6 +1,7 @@
 ---
-title: 'Z Title'
+title: "Z title"
+intro: "Intro Paragraph"
+date: '01-10-1990'
 ---
-### Content
-
-__cool__
+THIS IS A TEST
+==============

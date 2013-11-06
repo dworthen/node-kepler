@@ -1,6 +1,6 @@
 # Kepler v0.2.x
 
-#### Kepler is under heavy development, the API is subject to change.
+#### Kepler is under heavy development and the API is subject to change.
 
 Kepler is a collection of connect middleware designed to serve up a directory of markdown files (.md) as a blog. 
 
@@ -10,151 +10,19 @@ Kepler is a collection of connect middleware designed to serve up a directory of
 npm install kepler
 ```
 
-## API - v0.2.3
+## An Example
 
-Kepler is a collection of connect middleware.
-
-### kepler.parse(location|String)
-
-#### Parameters 
-
-- `location`: where the markdown files are hosted.
-
-The contents of markdown files will be parsed with [js-yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter) and the resulting object will be added to the `req` body under the kepler property. `req.kepler.__content` will be parsed with [markdown-js](https://github.com/evilstreak/markdown-js). 
-
-#### Example
+The following example creates a static blog server within an [Express](http://expressjs.com/) app.
 
 ```javascript
 var http = require('http')
-  , kepler = require('kepler')
-  , connect = require('connect')
-  , app = connect();
-
-app.use(kepler.parse('articles'));
-app.use(function(req, res, next) {
-  // req.kepler.__content will have the heart of the .md file
-  if(req.kepler) return res.end(kepler.__content));
-  return next();
-});
-
-http.createServer(app).listen(3000);
-```
-
-The url `localhost:3000/2013/blog` will have kepler look for `blog.md` in `/articles/2013/`. 
-
-If the markdown file being rendered contains
-
-```yaml
----
-title: "Website"
-list:
-  - one
-  - two
-----
-# Body!
-```
-
-then `req.kepler` will be
-
-```javascript
-{
-  title: "website",
-  list: ["one", "two"]
-  __content: "<h1>Body!</h1>'
-}
-```
-
-### kepler.render(options|Object)
-
-#### Parameters
-
-- `options`: 
-  - `layout`: `String` a layout template file.
-  - `engine`: `String` templating engine to be used (uses [consolidate.js](https://github.com/visionmedia/consolidate.js)). 
-
-kepler.render will take the kepler object added to `req` by kepler.parse and render it with the defined template engine using consolidate.
-
-#### Example
-
-```javascript
-var http = require('http')
-  , kepler = require('kepler')
-  , connect = require('connect')
-  , app = connect();
-
-app.use(kepler('articles'));
-app.use(kepler.parse({
-  engine: 'ejs',
-  layout: 'layout.ejs'
-});
-
-http.createServer(app).listen(3000);
-console.log('listening on port 3000');
-```
-
-layout.ejs
-
-```html
-<h1><%= title %></h1>
-<%- __content %>
-<p><%= intro %></p>
-<ul>
-  <% list.forEach(function(item) { %>
-    <li><%= item %></li>
-  <% }); %>
-</ul>
-```
-
-articles/test.md
-
-```yaml
----
-title: "Test Site"
-intro: "Intro Paragraph"
-list:
-  - one
-  - two
----
-THIS IS A TEST
-==============
-```
-
-Will produce:
-
-```html
-<h1>Test Site</h1>
-<h1>THIS IS A TEST</h1>
-<p>Intro Paragraph</p>
-<ul>
+  , kepler = require('../index')
+  , express = require('express');
   
-    <li>one</li>
-  
-    <li>two</li>
-  
-</ul>
-```
-
-### kepler.dirParse(options|Object)
-
-#### Parameters
-
-- `options`:
-  - `location`: `String` base directory to render md files from. Often times this will be the same location passed to `kepler.parse`.
-
-The dirParse middleware attaches a list of files in a directory to the `req` body under the kepler property. The files are ordered based on when the files were last modified, the most recently edited file being first.
-
-#### Example
-
-```javascript
-var http = require('http')
-  , kepler = require('kepler')
-  , express = require('express')
-  , cons = require('consolidate')
-  , app = express();
+app = express();
 
 app.use(express.static('test/'));
 
-// Single file parsing and rendering
 app.use(kepler.parse('test/fixtures'));
 
 app.use(kepler.render({
@@ -162,71 +30,184 @@ app.use(kepler.render({
   layout: 'test/layout.ejs'
 }));
 
-// Directory rendering
 app.use(kepler.dirParse({
-  location: 'test/fixtures'
+  location: 'test/fixtures',
+  limit: 1, // pagination with only 1 blog entry per page.
+  sort: 'date', // sort by date
+  sortOrder: -1 // Desc
 }));
 
-//TODO: Create a piece of middleware to render the list of files.
-app.use(function(req, res, next) {
-  if (req.kepler) {
-    cons.ejs("test/blogLayout.ejs", {files: req.kepler}, function(err, html) {
-      if (err) return next(err);
-      return res.end(html);
-    });
-  }
-});
+app.use(kepler.dirRender({
+  engine: 'ejs',
+  layout: 'test/blogLayout.ejs'
+}));
 
 http.createServer(app).listen(3000);
 console.log('listening on port 3000');
 ```
 
-blogLayout.ejs
+layout.ejs:
 
-```javascript
-<% files.forEach(function(file) { %>
-<h2><%= file.file.title %></h2>
-<p><%= file.ctime %></p>
-<% }); %>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="/prettyprint.js"></script>
+</head>
+<body>
+  <h1><%= title %></h1>
+  <p><%= date %></p>
+  <p><%= intro %></p>
+  <%- __content %>
+</body>
+</html>
 ```
 
-The layout expects the markdown files to at least have a title attribute.
+blogLayout.ejs:
 
-```yaml
----
-title: "Blog Title"
----
-### content
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+    <% files.forEach(function(file) { %>
+    <h2><%= file.title %></h2>
+    <p><%= file.date %></p>
+    <% }); %>
+</body>
+</html>
 ```
 
+`test/fixtures` contains a `2013` directory which houses two md files with [js-yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter)(optional). The md files contain yaml front matter with title and date fields:
+
+```
+---
+title: "Test Site"
+intro: "Intro Paragraph"
+date: '07-10-2013'
+---
+THIS IS A TEST
+==============
+```
+
+Visiting `http://localhost:3000/2013` will produce: 
+
+```html   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+    
+    <h2>Test Site</h2>
+    <p>07-10-2013</p>
+    
+    <h2>Z title</h2>
+    <p>01-10-1990</p>
+    
+</body>
+</html>
+```
+
+A pagination url is also available, `http://localhost:3000/2013/1` will display all the blog posts on page 1. This example is not too interesting since we are limiting each page to displaying one entry and since there are two md files then there are two pages, `/1` and `/2`.
+
+And visiting `http://localhost:3000/2013/test` will produce:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="/prettyprint.js"></script>
+</head>
+<body>
+  <h1>Test Site</h1>
+  <p>07-10-2013</p>
+  <p>Intro Paragraph</p>
+  <h1>THIS IS A TEST</h1>
+</body>
+</html>
+```
+
+## API - v0.2.4
+
+### kepler.parse(location|String)
+
+Parses a single md file that may contain [js-yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter).
+
+#### Parameters 
+
+- `location`: where the markdown files are hosted.
+
+The contents of markdown files will be parsed with [js-yaml-front-matter](https://github.com/dworthen/js-yaml-front-matter) and the resulting object will be added to the `req` body under the kepler property. `req.kepler.files[0].__content` will be parsed with [markdown-js](https://github.com/evilstreak/markdown-js). 
+
+### kepler.render(options|Object)
+
+Renders a single md file using a templating engine.
+
+#### Parameters
+
+- `options`: 
+  - `layout`: `String` a layout template file.
+  - `engine`: `String` templating engine to be used (uses [consolidate.js](https://github.com/visionmedia/consolidate.js)). 
+
+### kepler.dirParse(options|Object)
+
+Parses a directory of md files.
+
+#### Parameters
+
+<<<<<<< HEAD
 Each object in the list has access to the file [stats](http://nodejs.org/api/fs.html#fs_class_fs_stats). Here is an example of the type of object returned by dirParse.
+=======
+- `options`:
+  - `location`: `String` base directory to render md files from. Often times this will be the same location passed to `kepler.parse`.
+  - `limit`: `Number` the number of blog posts to display per page.
+  - `sort`: `String` the field to sort the files by. 
+  - `sortOrder`: `Number` 1 for Ascending and -1 for descending.
+
+The dirParse middleware attaches a list of files to the `req.kepler`. The files are ordered based on the sort field provided or by filename if a sort field is not provided. A `paginate` object is also created that contains information that can be used in a layout file to create a pagination functionality.
+
+Here is an example of the type of object returned by dirParse.
+>>>>>>> dev
 
 ```javascript
-[
-{"dev":2054,
-"mode":33204,
-"nlink":1,
-"uid":1000,
-"gid":1000,
-"rdev":0,
-"blksize":4096,
-"ino":3021542,
-"size":104,
-"blocks":8,
-"atime":"2013-09-18T22:37:58.000Z",
-"mtime":"2013-09-17T06:19:30.000Z",
-"ctime":"2013-09-17T06:19:30.000Z",
-"file":
-  {
-    "title":"Test Site",
-    "intro":"Intro Paragraph",
-    "list":["one","two"],
-    "__content":"<h1>THIS IS A TEST</h1>",
-    "location":"test/fixtures/2013/test.md"
+{ files:
+  [ { title: 'Test Site',
+      intro: 'Intro Paragraph',
+      date: '07-10-2013',
+      __content: '<h1>THIS IS A TEST</h1>',
+      location: 'test/fixtures/2013/test.md',
+      basename: 'test.md' },
+    { title: 'Z title',
+      intro: 'Intro Paragraph',
+      date: '01-10-1990',
+      __content: '<h1>THIS IS A TEST</h1>',
+      location: 'test/fixtures/2013/z.md',
+      basename: 'z.md' } ],
+  paginate: {
+    total: 2, // Total nmber of pages
+    current: 1 // the current page if visiting /2013/1
   }
-}
-]
 ```
+
+### kepler.dirRender(options|Object)
+
+Renders a list of md files created by `kepler.dirParse` using a templating engine.
+
+#### Parameters
+
+- `options`: 
+  - `layout`: `String` a layout template file.
+  - `engine`: `String` templating engine to be used (uses [consolidate.js](https://github.com/visionmedia/consolidate.js)). 
 
 ## Running the example
 
@@ -241,6 +222,8 @@ View `http://localhost:3000/2013` to view a list of blog entries, click on a tit
 
 ## Changelog
 
+Version 0.2.4, dirParse no longer provides file stats.
+
 Version >= 0.2.1 no longer renders markdown files directly but instead parses the file using js-yaml-front and markdown-js and passes the resulting object through the req body. This allows for people to write connect middleware to pre/post modify the parsed file.  
 
 Version 0.2.x is a complete overhaul from previous versions. Previous versions were poor attempts to be a Jekyll clone. Without a clear vision or problem to solve Kepler v0.1.x was convoluted solution for producing static websites. 
@@ -249,8 +232,7 @@ Version 0.2.x points Kepler into a new direction. Kepler is no longer a tool for
 
 ## TODO
 
-- Kepler will become a collection of connect middleware for modifying and parsing markdown files for displaying them as a blog.
-- Create a middleware to render the markdown using a predefined layout.
+- Document creating pagination functionality.
 
 ## License
 
