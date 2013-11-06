@@ -1,6 +1,6 @@
 {
   "name": "kepler",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Static website generator",
   "author": "Derek Worthen",
   "dependencies": {

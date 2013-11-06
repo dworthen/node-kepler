@@ -165,9 +165,6 @@ Parses a directory of md files.
 
 #### Parameters
 
-<<<<<<< HEAD
-Each object in the list has access to the file [stats](http://nodejs.org/api/fs.html#fs_class_fs_stats). Here is an example of the type of object returned by dirParse.
-=======
 - `options`:
   - `location`: `String` base directory to render md files from. Often times this will be the same location passed to `kepler.parse`.
   - `limit`: `Number` the number of blog posts to display per page.
@@ -177,7 +174,6 @@ Each object in the list has access to the file [stats](http://nodejs.org/api/fs.
 The dirParse middleware attaches a list of files to the `req.kepler`. The files are ordered based on the sort field provided or by filename if a sort field is not provided. A `paginate` object is also created that contains information that can be used in a layout file to create a pagination functionality.
 
 Here is an example of the type of object returned by dirParse.
->>>>>>> dev
 
 ```javascript
 { files:
